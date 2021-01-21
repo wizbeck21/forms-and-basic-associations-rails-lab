@@ -9,10 +9,17 @@ class SongsController < ApplicationController
 
   def new
     @song = Song.new
+    #we want to build out a method to create 3 different notes based on params
+
+    3.times do 
+      @song.notes.build
+    end
+    #to create empty notes in the database with note ids 
   end
 
   def create
-    @song = Song.new(song_params)
+    artist = Artist.find_or_create_by(name: song_params[:artist_name])
+    @song = artist.songs.build(song_params)
 
     if @song.save
       redirect_to @song
@@ -47,7 +54,7 @@ class SongsController < ApplicationController
   private
 
   def song_params
-    params.require(:song).permit(:title)
+    params.require(:song).permit(:title, :artist_name, :genre_id, :note_contents => [])
   end
 end
 
